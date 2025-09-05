@@ -25,7 +25,7 @@ public class PollManager {
         return user;
     }
 
-    public Optional getUser(Long id) {
+    public Optional<User> getUser(Long id) {
         return Optional.ofNullable(users.get(id));
     }
 

@@ -4,13 +4,13 @@ import java.time.Instant;
 
 public class Vote {
     private Long id;
-    private Instant publishedAt;
-
     private User voter;
     private VoteOption voteOption;
+    private Instant publishedAt;
 
-    public Vote() {}
-    this.publishedAt = Instant.now();
+    public Vote() {
+        this.publishedAt = Instant.now();
+    }
 
     // Getters and Setters
     public Long getId() { 

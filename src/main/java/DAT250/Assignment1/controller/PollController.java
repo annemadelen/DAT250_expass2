@@ -1,7 +1,7 @@
 package DAT250.Assignment1.controller;
 
 import DAT250.Assignment1.manager.PollManager;
-import DAT250.Assignment1.model.Poll;
+import DAT250.Assignment1.model.*;
 import org.springframework.web.bind.annotation.*;
 import java.util.Collection;
 
