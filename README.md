@@ -1,4 +1,5 @@
 Project Report
+
 I started this project by planning a folder structure and deciding which files I wanted to include. 
 This gave me a clear overview of all the different components and how they would fit together. 
 After that, I downloaded the HTTP client using the VS Code REST client extension and went through the process of writing the code for each file. 
