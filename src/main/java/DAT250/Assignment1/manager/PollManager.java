@@ -1,11 +1,14 @@
 package DAT250.Assignment1.manager;
 
-import DAT250.Assignment1.model.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Optional;
+import DAT250.Assignment1.model.Poll;
+import DAT250.Assignment1.model.User;
+import DAT250.Assignment1.model.Vote;
 
 @Component
 public class PollManager {
@@ -61,5 +64,25 @@ public class PollManager {
 
     public Map<Long, Vote> getAllVotes() {
         return votes;
+    }
+
+    public void removePoll(Long id) {
+        Poll removed = polls.remove(id);
+
+        if (removed != null) {
+            votes.values().removeIf(vote ->
+            vote.getVoteOption() != null && removed.getOptions().stream().anyMatch(opt -> 
+                opt.getCaption().equals(vote.getVoteOption().getCaption()))
+            );
+        }
+    }
+
+    public Vote updateVote(Long voteId, Vote updatedVote) {
+        Vote currentVote = votes.get(voteId);
+        if (currentVote != null) {
+            currentVote.setVoteOption(updatedVote.getVoteOption());
+            return currentVote; 
+        }
+        return null;
     }
 }

@@ -1,85 +1,93 @@
 package DAT250.Assignment1;
 
-import DAT250.Assignment1.manager.PollManager;
-import DAT250.Assignment1.model;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import java.time.Instant;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 
+import DAT250.Assignment1.model.Poll;
+import DAT250.Assignment1.model.User;
+import DAT250.Assignment1.model.Vote;
+import DAT250.Assignment1.model.VoteOption;
 
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PollManagerTest {
     
-    private PollManager pollManager;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     private User user1;
     private User user2;
     private Poll poll;
 
-    @BeforeEach
-    void setup() {
-        pollManager = new PollManager();
-    }
-
     @Test 
     void testScenario() { 
         // create a new user
-        user1 = pollManager.addUser(new User() {{
-            setUsername("user1");
-            setEmail("u1@example.com");
-        }});
+        User userReq1 = new User();
+        userReq1.setUsername("user1");
+        userReq1.setEmail("u1@example.com");
+        
+        user1 = restTemplate.postForObject("/users", userReq1, User.class);
 
         // list all users (should show 1)
-        assertEquals(1, pollManager.getAllUsers().size());
+        User[] users = restTemplate.getForObject("/users", User[].class);
+        assertEquals(1, users.length);
 
         // create another user
-        user2 = pollManager.addUser(new User() {{
-            setUsername("user2");
-            setEmail("u2@example.com");
-        }});
+        User userReq2 = new User();
+        userReq2.setUsername("user2");
+        userReq2.setEmail("u2@example.com");
+        
+        user2 = restTemplate.postForObject("/users", userReq2, User.class);
+
 
         // list all users again (should show 2)
-        assertEquals(2, pollManager.getAllUser().size());
+        users = restTemplate.getForObject("/users", User[].class);
+        assertEquals(2, users.length);
 
         // user 1 creates a new poll
-        poll = pollManager.addPoll(new Poll() {{
-            setQuestion("Favorite color?");
-            setCreator(user1);
-            setPublishedAt(Instant.now());
-        }});
+        Poll pollReq = new Poll();
+        pollReq.setQuestion("Favorite color?");
+        pollReq.setCreator(user1);
+        pollReq.setPublishedAt(Instant.now());
+        
+        VoteOption option1 = new VoteOption();
+        option1.setCaption("Red");
+        option1.setPresentationOrder(1); 
+        VoteOption option2 = new VoteOption();
+        option2.setCaption("Blue");
+        option2.setPresentationOrder(2);
+        
+        pollReq.setOptions(List.of(option1, option2));
+        poll = restTemplate.postForObject("/polls", pollReq, Poll.class);
+        
+        Poll[] polls = restTemplate.getForObject("/polls", Poll[].class);
+        assertEquals(1, polls.length);
 
-        poll.setOptions(List.of(
-            new VoteOption() {{ setCaption("Red"); setPresentationOrder(1); }},
-            new VoteOption() {{ setCaption("Blue"); setPresentationOrder(2); }}
-        ));
+        //user 2 votes on the poll
+        Vote voteReq = new Vote();
+        voteReq.setVoter(user2);
+        voteReq.setVoteOption(poll.getOptions().get(0)); 
 
-        // list polls (should show 1)
-        assertEquals(1, pollManager.getAllPolls().size());
+        Vote vote = restTemplate.postForObject("/votes", voteReq, Vote.class);
+    
+        // user 2 changes vote 
+        vote.setVoteOption(poll.getOptions().get(1));
+        restTemplate.put("/votes/" + vote.getId(), vote);
 
-        // user 2 votes on the poll
-        Vote vote = pollManager.addVote(new Vote() {{
-            setVoter(user2);
-            setVoteOption(poll.getOptions().get(0)); // votes red
-        }});
+        //checks updated vote
+        Vote updatedVote = restTemplate.getForObject("/votes/" + vote.getId(), Vote.class);
+        assertEquals("Blue", updatedVote.getVoteOption().getCaption());
 
-        // list votes (should show 1)
-        assertEquals(1, pollManager.getAllVotes().size());
+        //delete poll 
+        restTemplate.delete("/polls/" + poll.getId());
 
-        // user 2 changes their vote
-        vote.setVoteOption(poll.getOptions().get(1)); // changes to blue
-        pollManager.addVote(vote);
+        Vote[] votes = restTemplate.getForObject("/votes", Vote[].class);
+        assertEquals(0, votes.length);
 
-        // checks if vote is blue
-        assertEquals("Blue", pollManager.getVote(vote.getId()).getVoteOption().getCaption());
-
-        // Deletes one poll
-        pollManager.getAllPoll().clear();
-        pollManager.getAllVotes().clear(); // manual clean up
-
-        // list votes (should be empty)
-        assertEquals(0, pollManager.getAllVotes().size());
     }   
 }
