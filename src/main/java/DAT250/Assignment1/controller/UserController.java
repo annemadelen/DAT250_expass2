@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 
 import DAT250.Assignment1.manager.PollManager;
 import DAT250.Assignment1.model.User;
@@ -15,6 +17,7 @@ import DAT250.Assignment1.model.User;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173/")
 @RequestMapping("/users")
 public class UserController {
     
@@ -24,9 +27,17 @@ public class UserController {
         this.pollManager = pollManager;
     }
 
-    @PostMapping
-    public User createUser(@RequestBody User user) {
+    // signup
+    @PostMapping("/signup")
+    public User signup(@RequestBody User user) {
         return pollManager.addUser(user);
+    }
+
+    // login
+    @PostMapping("/login")
+    public User login(@RequestBody User user) {
+        return pollManager.authenticate(user.getUsername(), user.getPassword())
+                .orElse(null);
     }
 
     @GetMapping("/{id}")

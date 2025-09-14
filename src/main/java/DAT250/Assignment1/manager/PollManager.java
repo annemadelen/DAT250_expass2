@@ -85,4 +85,10 @@ public class PollManager {
         }
         return null;
     }
+
+    public Optional<User> authenticate(String username, String password) {
+        return users.values().stream()
+            .filter(u -> u.getUsername().equals(username) && u.getPassword().equals(password))
+            .findFirst();
+    }
 }

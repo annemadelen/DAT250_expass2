@@ -5,6 +5,7 @@ public class VoteOption {
     private Long id;
     private String caption;
     private int presentationOrder;
+    private int votes = 0;
 
     public VoteOption() {}
 
@@ -33,4 +34,11 @@ public class VoteOption {
         this.presentationOrder = presentationOrder;
     }
 
+    public int getVotes() {
+        return votes;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
 }
