@@ -1,4 +1,4 @@
-Project Report
+Project Report Expass 2
 
 I started this project by planning a folder structure and deciding which files I wanted to include. 
 This gave me a clear overview of all the different components and how they would fit together. 
@@ -18,3 +18,21 @@ This project was my first experience with REST API where I learned more about se
 dealing with environment issues and debugging problems that where not related to the code itself. 
 I would say that the biggest lesson is to make sure all tools and dependencies are set up correctly,
 and that I should probably do a factory reset of my computer. 
+
+Project Report Expass 3
+
+I started this project by only focusing on the frontend part and finishing a Poll that worked as intented. 
+This went smooth and I had fun designing and learning React. 
+When i started to connect my backend and using fetch, some problems occured. 
+These problems were issues including missing code in my API or code that I needed to update in my backend part.
+After going back and forth between my frontend and backend, trying to run the app multiple times and fixing bugs,
+things started to work.
+
+After this I wanted to implement a simple login, which lead to more going back and forth, changing things in both parts.
+I managed to do this and then moved on to aesthetics and fixing my css file with some help from ChatGPT.
+I want to continue to improve this and learn more about css later.
+
+One issue that I need to solve is that an error message "invalid password or username" need to pop up if you type wrong when trying to login.
+
+I also want to make a logout button. 
+
