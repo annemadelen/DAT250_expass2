@@ -1,14 +1,34 @@
 package DAT250.Assignment1.model;
 
+import jakarta.persistence.*;
 import java.time.Instant;
 
+@Entity
+@Table(name = "votes")
 public class Vote {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private User voter;
-    private VoteOption voteOption;
+
     private Instant publishedAt;
+    
+    @ManyToOne
+    @JoinColumn(name = "voter_id")
+    private User voter;
+
+    @ManyToOne
+    @JoinColumn(name = "vote_option_id")
+    private VoteOption voteOption;
+
 
     public Vote() {
+        this.publishedAt = Instant.now();
+    }
+
+    public Vote(User voter, VoteOption voteOption) {
+        this.voter = voter;
+        this.voteOption = voteOption;
         this.publishedAt = Instant.now();
     }
 

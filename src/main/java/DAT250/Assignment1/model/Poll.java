@@ -3,18 +3,42 @@ package DAT250.Assignment1.model;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "polls")
 public class Poll {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String question;
+
     private Instant publishedAt;
     private Instant validUntil;
 
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
     private User creator; // Creator of the Poll
+
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VoteOption> options = new ArrayList<>(); // 
 
     public Poll() {} 
+
+    public Poll(String question, User creator) {
+        this.question = question;
+        this.creator = creator;
+        this.publishedAt = Instant.now();
+    }
+
+    // helper method for tests
+    public VoteOption addVoteOption(String caption) {
+        VoteOption option = new VoteOption(caption, this, options.size());
+        options.add(option);
+        return option;
+    }
 
     // Getters and Setters
     public Long getId() {
