@@ -36,3 +36,9 @@ One issue that I need to solve is that an error message "invalid password or use
 
 I also want to make a logout button. 
 
+Project Report Expass 4
+
+I did not get any technical problems with this assignment luckly. 
+I only had some mistakes in the code from expass 2 that i had to edit such that the test passed. 
+I made four tables icluding users, polls, vote_options and votes. users represented the user entity. polls represented Poll entity with a foreign key creator_id referecing user.id. vote_options is representing the vote_option entity, with a foreign key poll_id refrencing poll.id. votes is representing the vote entitiy, with foreign key voter_id (to user.id) and vote_option_id (to vote_options.id)
+one pending issue that i did not manage to solve was that after the changes I did to my code, the test I made in expass 2 no longer passed. 
