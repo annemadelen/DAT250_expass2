@@ -3,11 +3,13 @@ package DAT250.Assignment1.controller;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.ArrayList;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import DAT250.Assignment1.model.Poll;
+import DAT250.Assignment1.manager.PollManager;
 
 
 @RestController
@@ -15,15 +17,15 @@ import DAT250.Assignment1.model.Poll;
 @RequestMapping("/polls")
 public class PollController {
 
-    private final PollService pollService;
+    private final PollManager pollManager;
 
-    public PollController(PollService pollService) {
-        this.pollService = pollService;
+    public PollController(PollManager pollManager) {
+        this.pollManager = pollManager;
     }
 
     @PostMapping
     public Poll createPoll(@RequestBody Poll poll) {
-        return pollService.addPoll(poll);
+        return pollManager.addPoll(poll);
     }
 
     @PostMapping("/{id}/vote/{optionIdx}")
@@ -32,10 +34,18 @@ public class PollController {
             @PathVariable int optionIdx,
             @RequestBody Map<String, Integer> body
     ) {
-        Optional<Poll> pollOpt = pollService.getPoll(id);
-        if (pollOpt.isEmpty()) return ResponseEntity.notFound().build();
+        // Optional<Poll> pollOpt = pollManager.getPoll(id);
+        // if (pollOpt.isEmpty()) return ResponseEntity.notFound().build();
 
-        Poll poll = pollOpt.get();
+        // Poll poll = pollOpt.get();
+
+
+        Poll poll = pollManager.getPoll(id);
+
+        if (poll == null) {
+            return ResponseEntity.notFound().build();
+        }
+
         int delta = body.getOrDefault("delta", 0);
 
         if (optionIdx < 0 || optionIdx >= poll.getOptions().size()) {
@@ -46,25 +56,24 @@ public class PollController {
                 poll.getOptions().get(optionIdx).getVotes() + delta
         );
 
-        pollService.addPoll(poll); // save changes
+        pollManager.addPoll(poll); // save changes
         return ResponseEntity.ok(poll);
     }
 
     @GetMapping
     public List<Poll> getAllPolls() {
-        return pollService.getAllPolls();
+        return new ArrayList<>(pollManager.getAllPolls().values());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Poll> getPoll(@PathVariable Long id) {
-        return pollService.getPoll(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Poll poll = pollManager.getPoll(id);
+        return poll != null ? ResponseEntity.ok(poll) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removePoll(@PathVariable Long id) {
-        pollService.removePoll(id);
+        pollManager.removePoll(id);
         return ResponseEntity.noContent().build();
     }
 }

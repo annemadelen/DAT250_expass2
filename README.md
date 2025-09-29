@@ -42,3 +42,10 @@ I did not get any technical problems with this assignment luckly.
 I only had some mistakes in the code from expass 2 that i had to edit such that the test passed. 
 I made four tables icluding users, polls, vote_options and votes. users represented the user entity. polls represented Poll entity with a foreign key creator_id referecing user.id. vote_options is representing the vote_option entity, with a foreign key poll_id refrencing poll.id. votes is representing the vote entitiy, with foreign key voter_id (to user.id) and vote_option_id (to vote_options.id)
 one pending issue that i did not manage to solve was that after the changes I did to my code, the test I made in expass 2 no longer passed. 
+
+I have added 3 different screenshots, one where i tried to make 2 users by adding all the information needed. I also tried to make a poll by using INSERT INTO and added different vote options. Then i used SELECT tool to control that the poll was correctly added. 
+
+
+
+
+
