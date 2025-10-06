@@ -45,6 +45,14 @@ one pending issue that i did not manage to solve was that after the changes I di
 
 I have added 3 different screenshots, one where i tried to make 2 users by adding all the information needed. I also tried to make a poll by using INSERT INTO and added different vote options. Then i used SELECT tool to control that the poll was correctly added. 
 
+Project Report Expass 5
+
+During the setup and experimentation with Redis, several technical issues occured. Initially, Redis was installed successfully and working from the terminal, but after a system restart, the local Redis service was no longer recognized. I tried to reinstall redis through homebrew and starting it as a background service. I tested this by redis-cli ping and got back a pong, then I experimented with GET and SET which was sucessful. Next i tried to keep track of logged-in users and represent the complex information and this also worked. 
+
+Then I tried implementing a new main RedisPollApp.java containing a simple poll for testing. This is where I got more issues. This incolved the dependencies where VS code could not read them leading to failing imports in the code. I tried to fix this but for some reason this lead to more complications with the JPA test files from last expass. I could no longer run ./gradlew build becouse of this. I was not able to fix this, however after a new download of VS code, the dependencie "redis.clients:jedis:6.2.0" sudddenly worked again. This made it possible to test that RedisPollApp.java and PollCacheManeger.java was able to run and work as expected. 
+
+I did not manage to fix the PollTest from last week and can no longer run ./gradlew build. Even with some help from other students, it would not be fixed. We concluded that there is some fundemental issues with my PC or VS code itself. I might have to do a reset where I try to download everything again and make sure everything is working togheter. 
+
 
 
 

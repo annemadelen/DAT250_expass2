@@ -14,6 +14,7 @@ import DAT250.Assignment1.model.User;
 import DAT250.Assignment1.model.Vote;
 import DAT250.Assignment1.model.VoteOption;
 
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PollManagerTest {
     
