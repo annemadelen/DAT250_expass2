@@ -1,15 +1,22 @@
 package DAT250.Assignment1.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.ArrayList;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import DAT250.Assignment1.model.Poll;
+import DAT250.Assignment1.broker.RedisBroker;
 import DAT250.Assignment1.manager.PollManager;
+import DAT250.Assignment1.model.Poll;
 
 
 @RestController
@@ -25,7 +32,13 @@ public class PollController {
 
     @PostMapping
     public Poll createPoll(@RequestBody Poll poll) {
-        return pollManager.addPoll(poll);
+        Poll createdPoll = pollManager.addPoll(poll);
+
+        String topicName = "poll:" + createdPoll.getId();
+        RedisBroker.subscribe(topicName);
+
+        System.out.println("Created poll topic: " + topicName);
+        return createdPoll;
     }
 
     @PostMapping("/{id}/vote/{optionIdx}")
@@ -34,31 +47,28 @@ public class PollController {
             @PathVariable int optionIdx,
             @RequestBody Map<String, Integer> body
     ) {
-        // Optional<Poll> pollOpt = pollManager.getPoll(id);
-        // if (pollOpt.isEmpty()) return ResponseEntity.notFound().build();
-
-        // Poll poll = pollOpt.get();
-
-
         Poll poll = pollManager.getPoll(id);
+        if (poll == null) return ResponseEntity.notFound().build();
 
-        if (poll == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        int delta = body.getOrDefault("delta", 0);
+        int delta = body.getOrDefault("delta", 1);
 
         if (optionIdx < 0 || optionIdx >= poll.getOptions().size()) {
             return ResponseEntity.badRequest().build();
         }
 
         poll.getOptions().get(optionIdx).setVotes(
-                poll.getOptions().get(optionIdx).getVotes() + delta
+            poll.getOptions().get(optionIdx).getVotes() + delta
         );
+        pollManager.addPoll(poll); // Save changes
 
-        pollManager.addPoll(poll); // save changes
+        // Publish the event
+        String topicName = "poll:" + id;
+        String message = "Vote on option " + optionIdx + " (+" + delta + ")";
+        RedisBroker.publish(topicName, message);
+
         return ResponseEntity.ok(poll);
     }
+
 
     @GetMapping
     public List<Poll> getAllPolls() {

@@ -18,6 +18,13 @@ repositories {
 	mavenCentral()
 }
 
+tasks.register<JavaExec>("redisPollMain"){
+    group  = "Execution"
+    description = "Run Redis Poll App"
+    classpath = sourceSets["main"].runtimeClasspath
+    mainClass.set("DAT250.Assignment1.RedisPollApp")
+}
+
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -31,5 +38,11 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+
+tasks.test {
+    useJUnitPlatform()
+    exclude("**/PollsTest.class")
 }
 

@@ -53,6 +53,13 @@ Then I tried implementing a new main RedisPollApp.java containing a simple poll 
 
 I did not manage to fix the PollTest from last week and can no longer run ./gradlew build. Even with some help from other students, it would not be fixed. We concluded that there is some fundemental issues with my PC or VS code itself. I might have to do a reset where I try to download everything again and make sure everything is working togheter. 
 
+Project Report Expass 6
+
+I extended my Poll application with event sourcing using a message broker. I decided to use Redis Pub/Sub since I was already using redis in my project and I wanted to learn more about this.
+I tried to implement it such that each new poll automatically creates a redis topic (poll:1), then when a user votes on a poll, the app publishes a message to that topic. The application and other clients can also subscribe to those topics and get notified when there is new votes. 
+I think my approach made it simple to understand the main ideas behind message brokers.
+I tested that this worked by using several terminal windows. I have added a screenshot of this. This showes that i subscribed to a redis topic, created a poll via REST and casted a vote. Then the redis-cli window showed a message as you can see in the picture. This confirmed that the publish/subscribe was working correcty.
+Since I had some truble with PollsTest and jakarta I added an exclude in my build.gradle.kts as a simple solution. As future improvements I need to fix this and I would like to add some user or session info to the message since votes are currently anonymous. 
 
 
 
