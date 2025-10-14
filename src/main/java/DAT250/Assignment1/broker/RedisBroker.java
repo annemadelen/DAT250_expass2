@@ -4,10 +4,8 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 public class RedisBroker {
-
     private static final String REDIS_URL = "redis://localhost:6379";
 
-    // Publish a message (for example, a vote)
     public static void publish(String topic, String message) {
         try (Jedis jedis = new Jedis(REDIS_URL)) {
             jedis.publish(topic, message);
@@ -15,7 +13,6 @@ public class RedisBroker {
         }
     }
 
-    // Subscribe to a topic (for example, to listen for votes)
     public static void subscribe(String topic) {
         new Thread(() -> {
             try (Jedis jedis = new Jedis(REDIS_URL)) {
@@ -23,7 +20,6 @@ public class RedisBroker {
                     @Override
                     public void onMessage(String channel, String message) {
                         System.out.println("📩 Received on " + channel + ": " + message);
-                        // You could later add logic to update poll data here
                     }
                 }, topic);
             }
