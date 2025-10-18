@@ -61,6 +61,11 @@ I think my approach made it simple to understand the main ideas behind message b
 I tested that this worked by using several terminal windows. I have added a screenshot of this. This showes that i subscribed to a redis topic, created a poll via REST and casted a vote. Then the redis-cli window showed a message as you can see in the picture. This confirmed that the publish/subscribe was working correcty.
 Since I had some truble with PollsTest and jakarta I added an exclude in my build.gradle.kts as a simple solution. As future improvements I need to fix this and I would like to add some user or session info to the message since votes are currently anonymous. 
 
+Project Report Expass 7
+
+I did install docker in expass 1 and it was in my apps, however when I tried to open it with open /Application/Docker.app it would not react and when I tried to open it manually nothing happened so I had to sudo pkill -f Docker then reinstall it. This worked and I got Docker to operate in the background.
+Then I went on to containerize my spring boot pollapp with a Dockerfile which i added in my project. I made it such that it builds my app, runs in a lightweight java runtime, does not run as root and is multi-stage build. Then I ran the command line: docker build -t assignment1:latest ., this took a bit longer then expected but it worked as intended. After this I ran docker run -p 8080:8080 assignment1 and opened http://localhost:8080. 
+I tested my final PollApp and everything was still working even tho i have made much changes to the application. The only thing that was not working was voting which i need to fix next. 
 
 
 
